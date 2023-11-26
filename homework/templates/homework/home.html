@@ -1,0 +1,48 @@
+{% extends "homework/base.html" %}
+{% block content %}
+<style>
+    .center-align {
+        display: flex;
+        justify-content: center;
+        margin-top: 150px;
+    }
+
+    .center-align-h1 {
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+    }
+
+    .home-button-style {
+        background-color: #0d8285;
+    }
+
+    .home-button-style:hover {
+        background-color: #33b6b9;
+    }
+
+    .home-button-anchor-style {
+         text-decoration: none;
+         color: white;
+    }
+
+    .home-button-anchor-style:hover {
+         text-decoration: none;
+         color: white;
+    }
+</style>
+<h1 class="center-align-h1">
+    Looking for domestic help?
+</h1>
+
+<div class="center-align">
+    <div class="btn-group" role="group" aria-label="Basic outlined example">
+        <button type="button" class="btn btn-outline-success home-button-style">
+            <a href="{% url 'registration' %}?role=customer" class="home-button-anchor-style">Need worker</a>
+        </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-outline-success home-button-style">
+            <a href="{% url 'registration' %}?role=worker" class="home-button-anchor-style">Looking for customer</a>
+        </button>
+    </div>
+</div>
+{% endblock %}
