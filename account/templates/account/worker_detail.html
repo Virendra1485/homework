@@ -1,0 +1,24 @@
+{% extends "homework/base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="worker-image">
+                    <img src="{{ MEDIA_URL }}{{ worker.profile_picture }}" alt="profile_picture" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h1 class="mb-4">Worker Details</h1>
+                <div class="worker-details">
+                    <h3>Name: {{ worker.first_name }} {{ worker.last_name }}</h3>
+                    <p>Email: {{ worker.email }}</p>
+                    <p>Working Days: {{ worker.working_days }}</p>
+                    <p>Description: {{ worker.description }}</p>
+                </div>
+                <div class="chat-button">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

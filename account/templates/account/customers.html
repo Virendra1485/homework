@@ -1,0 +1,27 @@
+{% extends "homework/base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">List of Customers</h1>
+    <ul class="list-group">
+        {% for customer in page_obj %}
+        <li class="list-group-item">{{ customer.first_name }}</li>
+        &nbsp;
+        {% empty %}
+        <li class="list-group-item">No customers found.</li>
+        {% endfor %}
+    </ul>
+    <div class="pagination mt-4">
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <a class="btn btn-link" href="?page=1">&laquo; first</a>
+                    <a class="btn btn-link" href="?page={{ page_obj.previous_page_number }}">previous</a>
+                {% endif %}
+                <span class="current-page">{{ page_obj.number }}</span>
+                {% if page_obj.has_next %}
+                    <a class="btn btn-link" href="?page={{ page_obj.next_page_number }}">next</a>
+                    <a class="btn btn-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+    </div>
+</div>
+{% endblock %}
