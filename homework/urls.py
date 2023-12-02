@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/account/', include("account.urls")),
     path('', TemplateView.as_view(template_name="homework/home.html"), name="home"),
+    path('chats/', include("chat.urls")),
 ]

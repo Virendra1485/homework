@@ -9,15 +9,15 @@
                 </div>
             </div>
             <div class="col-md-8">
-                <h1 class="mb-4">Worker Details</h1>
-                <div class="worker-details">
-                    <h3>Name: {{ worker.first_name }} {{ worker.last_name }}</h3>
-                    <p>Email: {{ worker.email }}</p>
-                    <p>Working Days: {{ worker.working_days }}</p>
+                <h1 class="mb-4">Customer Details</h1>
+                <div class="customer-details">
+                    <h3>Name: {{ customer.first_name }} {{ customer.last_name }}</h3>
+                    <p>Email: {{ customer.email }}</p>
+                    <p>Working Days: {{ customer.working_days }}</p>
                     <p>Description: {{ worker.description }}</p>
                 </div>
                 <div class="chat-button">
-                    <a href="{% url 'chat' worker.id %}" class="btn btn-primary">Chat</a>
+                    <a href="{% url 'chat' customer.id %}" class="btn btn-primary">Chat</a>
                 </div>
             </div>
         </div>

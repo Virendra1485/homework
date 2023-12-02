@@ -1,0 +1,63 @@
+{% extends "homework/base.html" %}
+
+{% block content %}
+<style>
+    .message {
+        background-color: #f2f2f2;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+</style>
+
+<h1>Lets chat!</h1>
+
+{% for message in messages %}
+    <div class="message">
+        <strong>{{ message.sender.username }}</strong>
+        <span class="timestamp">{{ message.created_at|date:"F j, Y, g:i a" }}</span>
+        <p>{{ message.text }}</p>
+    </div>
+{% endfor %}
+
+<form id="form">
+    <input type="text" name="message"/>
+</form>
+
+<div id="messages"></div>
+
+<script type="text/javascript">
+    const url = `ws://${window.location.host}/ws/socket-server/`;
+    const receiver_id = window.location.pathname.split('/').filter(Boolean).pop();
+    const chatSocket = new WebSocket(url);
+
+    chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+        console.log('Data:', data);
+
+        if (data.type === 'chat') {
+            const messages = document.getElementById('messages');
+            messages.insertAdjacentHTML('beforeend', `<div class="message">
+                                    <p>${data.message}</p>
+                                </div>`);
+        }
+    };
+
+    const form = document.getElementById('form');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const messageInput = e.target.message;
+        const message = messageInput.value.trim();
+
+        if (message) {
+            chatSocket.send(JSON.stringify({
+                'message': message,
+                'sender_id': {{ request.user.id }},
+                'receiver_id': parseInt(receiver_id),
+            }));
+            form.reset();
+        }
+    });
+</script>
+
+{% endblock %}

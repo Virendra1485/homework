@@ -25,7 +25,10 @@
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Chats</a>
+                    <a class="nav-link" href="{% url 'chats' %}">Chats</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'chats' %}">{{request.user}}</a>
                 </li>
             </ul>
             <div>
