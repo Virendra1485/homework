@@ -78,3 +78,9 @@ class WorkerDetailView(DetailView):
     model = UserAccount
     template_name = 'account/worker_detail.html'
     context_object_name = 'worker'
+
+
+class CustomerDetailView(DetailView):
+    model = UserAccount
+    template_name = 'account/customer_detail.html'
+    context_object_name = 'customer'

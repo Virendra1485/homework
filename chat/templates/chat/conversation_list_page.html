@@ -1,0 +1,39 @@
+{% extends "homework/base.html" %}
+{% block content %}
+<style>
+    .participants-box {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px; /* Adjust the top margin as needed */
+    }
+
+    .participant-box {
+        background-color: #f2f2f2;
+        padding: 10px;
+        border-radius: 5px;
+        margin-left: 10px; /* Adjust the left margin as needed */
+    }
+</style>
+
+
+<!-- Assuming you have a list of conversations in the 'conversations' variable -->
+{% for conversation in conversations %}
+    <div class="conversation">
+<!--        <h3>Conversation ID: {{ conversation.id }}</h3>-->
+<!--        <p>Participants:</p>-->
+        <div class="participants-box">
+            {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                    <div class="participant-box">
+                        {{ participant.username }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endfor %}
+
+
+{% endblock %}
+
