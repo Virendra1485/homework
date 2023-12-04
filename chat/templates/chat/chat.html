@@ -2,38 +2,84 @@
 
 {% block content %}
 <style>
+    .receiver-message {
+        background-color: #f2f2f2;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        width: 400px;
+        text-align: left;
+    }
+
+    .sender {
+                padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            text-align: right;
+            width: auto;
+    }
+
+    .receiver {
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
     .message {
         background-color: #f2f2f2;
         padding: 10px;
         margin-bottom: 10px;
         border-radius: 5px;
+        width: 400px;
+        text-align: left;
+    }
+
+    .centered-div {
+            width: 60%; /* Adjust the width as needed */
+            max-width: 900px; /* Set a maximum width if desired */
+            margin-left: auto; /* Push the div to the center */
+            margin-right: auto; /* Push the div to the center */
+            padding: 20px; /* Add padding as needed */
+            background-color: #ffffff; /* Optional background color */
+            border: 1px solid #ccc; /* Optional border */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional box shadow */
     }
 </style>
 
 <h1>Lets chat!</h1>
+<div class="centered-div">
 
-{% for message in messages %}
-    <div class="message">
-        <strong>{{ message.sender.username }}</strong>
-        <span class="timestamp">{{ message.created_at|date:"F j, Y, g:i a" }}</span>
+
+    {% for message in messages %}
+    {% if message.sender.id == request.user.id %}
+    <div class="sender">
+        <strong>{{ message.sender.first_name }}</strong>
         <p>{{ message.text }}</p>
     </div>
-{% endfor %}
+    {% else %}
+    <div class="receiver">
+        <strong>{{ message.sender.first_name }}</strong>
+        <p>{{ message.text }}</p>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <form id="form">
+        <input type="text" name="message"/>
+    </form>
 
-<form id="form">
-    <input type="text" name="message"/>
-</form>
-
-<div id="messages"></div>
+    <div id="messages"></div>
+</div>
 
 <script type="text/javascript">
     const url = `ws://${window.location.host}/ws/socket-server/`;
-    const receiver_id = window.location.pathname.split('/').filter(Boolean).pop();
+    const receiver_id = {{receiver.id}}
     const chatSocket = new WebSocket(url);
 
     chatSocket.onmessage = function (e) {
         const data = JSON.parse(e.data);
         console.log('Data:', data);
+        console.log("lllllllllllllll", data)
 
         if (data.type === 'chat') {
             const messages = document.getElementById('messages');

@@ -30,14 +30,12 @@ class ChatConsumer(WebsocketConsumer):
 
     def receive(self, text_data=None, bytes_data=None):
         text_data = json.loads(text_data)
-        print(text_data, "=============")
         message = text_data['message']
         sender_id = text_data['sender_id']
         receiver_id = text_data['receiver_id']
         users = [UserAccount.objects.get(pk=sender_id).id, UserAccount.objects.get(pk=receiver_id).id]
         conversation = Conversation.objects.filter(participants__in=users).annotate(
             participant_count=Count('participants')).filter(participant_count=len(users)).first()
-        # conversation = Conversation.objects.filter(participants__exact=users).first()
         if not conversation:
             conversation = Conversation.objects.create()
             conversation.participants.add(*users)
@@ -47,7 +45,9 @@ class ChatConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {
                 'type': 'chat_message',
-                'message': message
+                'message': message,
+                'receiver_id': receiver_id,
+                'sender_id': sender_id
             }
         )
 
@@ -57,9 +57,12 @@ class ChatConsumer(WebsocketConsumer):
         # }))
 
     def chat_message(self, event):
+        print(event, "kljklfjkljskljkljkljkljlk")
         message = event['message']
         self.send(text_data=json.dumps({
             'type': 'chat',
             'message': message,
+            'receiver_id': event['receiver_id'],
+            'sender_id': event['sender_id'],
             'dj': "dj"
         }))
