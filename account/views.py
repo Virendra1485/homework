@@ -21,7 +21,6 @@ class UserRegistrationView(CreateView):
         response = super().form_valid(form)
         self.object.set_password(form.cleaned_data['password'])
         self.object.save()
-        login(self.request, self.object)
         return response
 
 

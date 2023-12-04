@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Conversation, Message
 from django.views.generic import ListView, DetailView, View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from account.models import UserAccount
 
 
 def conversation_detail(request, conversation_id):
@@ -37,6 +38,7 @@ class ChatView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         worker_id = self.kwargs.get("worker_id")
+        worker = UserAccount.objects.get(pk=worker_id)
         current_user = self.request.user.id
         users = [worker_id, current_user]
         from django.db.models import Count
@@ -47,6 +49,7 @@ class ChatView(LoginRequiredMixin, TemplateView):
 
         context = {
                 'messages': messages,
+                'receiver': worker
         }
 
         return context

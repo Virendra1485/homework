@@ -27,9 +27,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'chats' %}">Chats</a>
                 </li>
+                {% if request.user.email %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'chats' %}">{{request.user}}</a>
+                    <a class="nav-link" href="{% url 'chats' %}">{{request.user}}---{{request.user.role}}</a>
                 </li>
+                {% endif %}
             </ul>
             <div>
                 <ul class="d-flex">
