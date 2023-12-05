@@ -1,18 +1,20 @@
-{% extends "homework/base.html" %}
+{% extends 'homework/base.html' %}
 
 {% block content %}
 <style>
-    .receiver-message {
-        background-color: #f2f2f2;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        width: 400px;
-        text-align: left;
-    }
+    .centered-div {
+           width: 60%;
+           max-width: 900px;
+           margin-left: auto;
+           margin-right: auto;
+           padding: 20px;
+           background-color: #ffffff;
+           border: 1px solid #ccc;
+           box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+   }
 
     .sender {
-                padding: 10px;
+            padding: 10px;
             border-radius: 10px;
             margin-bottom: 10px;
             text-align: right;
@@ -26,84 +28,100 @@
         text-align: left;
     }
 
-    .message {
-        background-color: #f2f2f2;
-        padding: 10px;
-        margin-bottom: 10px;
-        border-radius: 5px;
-        width: 400px;
-        text-align: left;
-    }
+    .customer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
 
-    .centered-div {
-            width: 60%; /* Adjust the width as needed */
-            max-width: 900px; /* Set a maximum width if desired */
-            margin-left: auto; /* Push the div to the center */
-            margin-right: auto; /* Push the div to the center */
-            padding: 20px; /* Add padding as needed */
-            background-color: #ffffff; /* Optional background color */
-            border: 1px solid #ccc; /* Optional border */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional box shadow */
-    }
+    .customer-image {
+    width: 100px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+    overflow: hidden;
+    border-radius: 50%; /* Create a circular shape */
+    margin-right: 10px; /* Adjust the margin as needed */
+}
 </style>
-
-<h1>Lets chat!</h1>
+<center><h4>Lets chat!</h4></center>
 <div class="centered-div">
-
-
+    <div class="customer-image">
+        <img src="/{{ receiver.profile_picture }}" alt="profile_picture">
+    </div>
+    <h4>{{receiver.first_name}}</h4>
     {% for message in messages %}
     {% if message.sender.id == request.user.id %}
     <div class="sender">
         <strong>{{ message.sender.first_name }}</strong>
-        <p>{{ message.text }}</p>
+        <p>{{message.text}}</p>
     </div>
     {% else %}
     <div class="receiver">
         <strong>{{ message.sender.first_name }}</strong>
-        <p>{{ message.text }}</p>
+        <p>{{message.text}}</p>
     </div>
     {% endif %}
     {% endfor %}
-    <form id="form">
-        <input type="text" name="message"/>
-    </form>
-
     <div id="messages"></div>
+    <form id="form">
+        <input name="message" style="width: 100%;" placeholder="Type your message">
+    </form>
 </div>
+<br>
 
-<script type="text/javascript">
+<script>
+    const messages = document.getElementById('messages');
     const url = `ws://${window.location.host}/ws/socket-server/`;
-    const receiver_id = {{receiver.id}}
+    const receiver_id = {{receiver.id}};
     const chatSocket = new WebSocket(url);
+    const form = document.getElementById('form');
+    const messageInput = form.querySelector('input[name="message"]');
+
+    messageInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+    }
+    });
+
+    function sendMessage() {
+    const message = messageInput.value.trim();
+    console.log("dddddddddddddddddddddddddd", message);
+    if (message) {
+        chatSocket.send(JSON.stringify({
+            'message': message,
+            'sender_id': {{ request.user.id }},
+            'receiver_id': parseInt(receiver_id),
+        }));
+        form.reset();
+    }
+    }
+
+    // receive
 
     chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        console.log('Data:', data);
-        console.log("lllllllllllllll", data)
+    const data = JSON.parse(e.data);
+    console.log("00000000000000000000000000000", data)
+    console.log('Datap-p--------------:', data.type);
 
-        if (data.type === 'chat') {
-            const messages = document.getElementById('messages');
-            messages.insertAdjacentHTML('beforeend', `<div class="message">
-                                    <p>${data.message}</p>
-                                </div>`);
-        }
+    if (data.type === 'chat') {
+        console.log('messages=====================', messages)
+        if (messages) {
+    // Use insertAdjacentHTML to append the message
+    const messageClass = data.sender_id === {{ request.user.id }} ? 'sender' : 'receiver';
+    const sender = data.sender_id === {{ request.user.id }} ? '{{request.user.first_name}}' : '{{receiver.first_name}}';
+
+    messages.insertAdjacentHTML('beforeend', `<div class="message ${messageClass}">
+            <strong>${sender}</strong>
+                                                        <p>${data.message}</p>
+                                                    </div>`);
+
+    console.log("successfulr======================")
+    } else {
+    console.error("Element 'messages' not found.");
+    }
+    }
     };
-
-    const form = document.getElementById('form');
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const messageInput = e.target.message;
-        const message = messageInput.value.trim();
-
-        if (message) {
-            chatSocket.send(JSON.stringify({
-                'message': message,
-                'sender_id': {{ request.user.id }},
-                'receiver_id': parseInt(receiver_id),
-            }));
-            form.reset();
-        }
-    });
 </script>
-
 {% endblock %}
+
+
