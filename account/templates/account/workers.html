@@ -1,5 +1,5 @@
 {% extends "homework/base.html" %}
-{% load static %}
+<!--{% load static %}-->
 {% block content %}
 <style>
     .worker-card {
@@ -53,7 +53,7 @@
                         <div class="card worker-card mt-4" style="height: 512px; width: 293px">
                             <div style="margin: 10px;">
                                 <div class="worker-image">
-                                    <img src="{{ MEDIA_URL }}{{ worker.profile_picture }}" alt="profile_picture">
+                                    <img src="/{{ worker.profile_picture }}" alt="profile_picture">
                                     <h5 class="card-title">{{ worker.first_name }}</h5>
                                 </div>
                                 <div class="worker-details">

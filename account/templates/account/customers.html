@@ -1,16 +1,87 @@
 {% extends "homework/base.html" %}
+{% load static %}
 {% block content %}
-<div class="container mt-5">
-    <h1 class="mb-4">List of Customers</h1>
-    <ul class="list-group">
-        {% for customer in page_obj %}
-        <li class="list-group-item">{{ customer.first_name }}</li>
-        &nbsp;
-        {% empty %}
-        <li class="list-group-item">No customers found.</li>
-        {% endfor %}
-    </ul>
-    <div class="pagination mt-4">
+<style>
+    .customer-card {
+    display: flex;
+}
+
+.customer-image {
+    width: 100px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+    overflow: hidden;
+    border-radius: 50%; /* Create a circular shape */
+    margin-right: 10px; /* Adjust the margin as needed */
+}
+
+.customer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
+
+.card-button {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+<!--.customer-details {-->
+<!--    flex: 1; /* Take remaining space */-->
+<!--}-->
+
+/* Additional styling can be added as needed */
+
+</style>
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-md-4"> <!-- 1/3 width for filters -->
+            <div class="filter-sidebar">
+                <!-- Add filter content here -->
+                <legend class="c-card__key">Filters</legend>
+                <!-- Add your filter options here -->
+            </div>
+        </div>
+        <div class="col-md-8">
+            <center><h1 class="mb-4">List of Customers</h1></center>
+            <ul class="list-group">
+                <div class="row">
+                    {% for customer in page_obj %}
+                    <div class="col-md-3"> <!-- Each card takes 1/3 of the width, which allows for 3 cards in a row -->
+                        <!--                    <div class="card customer-card" style="height: 417px; width: 293.3px;">-->
+                        <div class="card customer-card mt-4" style="height: 512px; width: 293px">
+                            <div style="margin: 10px;">
+                                <div class="customer-image">
+                                    <img src="/{{ customer.profile_picture }}" alt="profile_picture">
+                                    <h5 class="card-title">{{ customer.first_name }}</h5>
+                                </div>
+                                <div class="customer-details">
+                                    <h5 class="card-title">{{ customer.first_name }}</h5>
+                                    <legend class="c-card__key">Working days</legend>
+                                    <p class="card-description">{{ customer.working_days }}</p>
+                                    <p class="card-text">{{ customer.description }}</p>
+                                </div>
+                                <div class="card-button">
+                                    <a href="{% url 'customer_detail' customer.id %}" class="btn btn-primary btn-block">View
+                                        Profile</a>
+                                </div>
+                            </div>
+                            &nbsp;
+                        </div>
+                    </div>
+                    &nbsp;
+                    {% if forloop.counter|divisibleby:3 %}
+                    <!-- Add an empty space after every 3rd card to break to the next row -->
+                    <div class="w-100"></div>
+                    {% endif %}
+                    {% empty %}
+                    <li class="list-group-item">No customer found.</li>
+                    {% endfor %}
+                </div>
+            </ul>
+
+            <div class="pagination mt-4">
             <span class="step-links">
                 {% if page_obj.has_previous %}
                     <a class="btn btn-link" href="?page=1">&laquo; first</a>
@@ -22,6 +93,8 @@
                     <a class="btn btn-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
                 {% endif %}
             </span>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
