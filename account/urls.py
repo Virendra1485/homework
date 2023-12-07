@@ -8,6 +8,6 @@ urlpatterns = [
     path('log-out/', UserLogOutView.as_view(), name="log-out"),
     path('customers/', CustomerListView.as_view(), name="customers"),
     path('workers/', WorkerListView.as_view(), name="workers"),
-    path('worker/<int:pk>', WorkerDetailView.as_view(), name="worker_detail"),
-    path('worker/<int:pk>', CustomerDetailView.as_view(), name="customer_detail"),
+    path('worker/<int:pk>/', WorkerDetailView.as_view(), name="worker_detail"),
+    path('customer/<int:pk>/', CustomerDetailView.as_view(), name="customer_detail"),
 ]
