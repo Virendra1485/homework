@@ -3,4 +3,5 @@ django-multiselectfield==0.1.12
 Pillow==10.1.0
 channels==4.0.0
 websocket==0.2.1
-daphne==4.0.0psycopg2-binary==2.9.9
+daphne==4.0.0
+psycopg2-binary==2.9.9

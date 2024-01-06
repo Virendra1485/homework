@@ -14,26 +14,27 @@
         border-radius: 5px;
         margin-left: 10px; /* Adjust the left margin as needed */
     }
+
+    .participant-anchor {
+        text-decoration: None;
+        color: black;
+    }
 </style>
 
 
-<!-- Assuming you have a list of conversations in the 'conversations' variable -->
 {% for conversation in conversations %}
-    <div class="conversation">
-<!--        <h3>Conversation ID: {{ conversation.id }}</h3>-->
-<!--        <p>Participants:</p>-->
-        <div class="participants-box">
-            {% for participant in conversation.participants.all %}
-                {% if participant != request.user %}
-                    <div class="participant-box">
-                        {{ participant.username }}
-                    </div>
-                {% endif %}
-            {% endfor %}
-        </div>
+<div class="conversation">
+    <div class="participants-box">
+        {% for participant in conversation.participants.all %}
+        {% if participant != request.user %}
+        <a href="{% url 'chat' participant.id %}" class="participant-anchor">
+            <div class="participant-box">
+                {{ participant.username }}
+            </div>
+        </a>
+        {% endif %}
+        {% endfor %}
     </div>
+</div>
 {% endfor %}
-
-
 {% endblock %}
-
