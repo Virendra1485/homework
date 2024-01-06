@@ -42,6 +42,12 @@ class UserAccount(AbstractUser):
         ('Sat', 'Saturday'),
         ('Sun', 'Sunday'),
     ]
+
+    Blocker = [
+        ('Dog', 'Dog'),
+        ('Cat', 'Cat'),
+        ('Ironing', 'Ironing'),
+    ]
     profile_picture = models.ImageField(upload_to='media/profile_picture', null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
     working_days = MultiSelectField(choices=DAY_CHOICES, validators=[MaxValueValidator(6)], default=[])
@@ -51,6 +57,10 @@ class UserAccount(AbstractUser):
     user_permissions = models.ManyToManyField(Permission, related_name="user_permissions")
     amount = models.PositiveIntegerField(default=100)
     description = models.TextField(blank=True, null=True)
+    published = models.BooleanField(default=True)
+    location_country = models.CharField(max_length=100, default="India")
+    location_city = models.CharField(max_length=100, default="Indore")
+    blocker = models.CharField(choices=Blocker, default=[])
 
     USERNAME_FIELD = "email"
 

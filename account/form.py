@@ -1,6 +1,5 @@
 from django import forms
 from .models import UserAccount
-from django.contrib.auth.forms import AuthenticationForm
 
 
 class UserSignUpForm(forms.ModelForm):
@@ -14,5 +13,7 @@ class UserSignUpForm(forms.ModelForm):
             "working_days",
             "amount",
             "description",
-            "profile_picture"
+            "profile_picture",
+            "location_country",
+            "location_city",
         )
