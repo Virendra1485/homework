@@ -1,63 +1,40 @@
-{% extends 'homework/base.html' %}
+{% extends "homework/base.html" %}
 {% block content %}
 <style>
-    .customer-image img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Maintain aspect ratio and cover the container */
+    .customer-image {
+    width: 100px; /* Adjust the width as needed */
+    height: 100px; /* Adjust the height as needed */
+    overflow: hidden;
+    border-radius: 50%; /* Create a circular shape */
+    margin-right: 10px; /* Adjust the margin as needed */
 }
 
-    .customer-image {
-        width: 100px; /* Adjust the width as needed */
-        height: 100px; /* Adjust the height as needed */
-        overflow: hidden;
-        border-radius: 50%; /* Create a circular shape */
-        margin-right: 10px; /* Adjust the margin as needed */
-        margin-left: 10px;
-    }
-
-    .name-class {
-        margin-top: 100px;
-    }
-    .description-class {
-        margin-left: 20px;
-        margin-top: 20px;
-    }
-    .working-days {
-        margin-left: 20px;
-        margin-top: 20px;
-    }
-
+.customer-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Maintain aspect ratio and cover the container */
+}
 </style>
-
 <div class="container" style="display: flex;">
-    <div class="col-md-6 mt-2 mb-2" >
-        <div style="display: flex;">
-            <div class="customer-image mt-4 ml-4 col-md-4">
-                <img src="/{{ user.profile_picture }}" alt="profile_picture">
-            </div>
-            <div class="mt-4 col-md-4 name-class">
-                <div>
-                    {{ user.first_name }} {{ user.last_name }}
-                </div>
-                <div style="margin-top: 10px;">
-                    {{user.email}}
-                </div>
-            </div>
+    <div class="col-md-6 mt-4">
+        <div class="customer-image">
+            <img src="/{{ user.profile_picture }}" alt="profile_picture">
         </div>
-        <div class="description-class">
+        <h5 class="card-title mt-4">{{ user.first_name }}sdfsdf</h5>
+        <div>
             <textarea rows="4" cols="50" style="border-radius: 10px;" readonly>
                 {{user.description}}
             </textarea>
         </div>
     </div>
-    <div class="col-md-6 mt-2 mb-2">
-        <div class="working-days">
-            <strong>Working Days</strong>:- {{user.working_days}}
-        </div>
-        <div class="working-days">
-            <strong>Amount:-</strong>:- {{user.amount}}
-        </div>
+    <div class="col-md-6 mt-4">
+        <div>{{user.location_country}}</div>
+        <div>{{user.location_city}}</div>
+        <div>{{user.amount}}</div>
+        <div>{{user.working_days}}</div>
+        <div>{{user.blocker}}</div>
     </div>
+
+
 </div>
 {% endblock %}

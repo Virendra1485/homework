@@ -14,27 +14,25 @@
         border-radius: 5px;
         margin-left: 10px; /* Adjust the left margin as needed */
     }
-
-    .participant-anchor {
-        text-decoration: None;
-        color: black;
-    }
 </style>
 
 
 {% for conversation in conversations %}
-<div class="conversation">
-    <div class="participants-box">
-        {% for participant in conversation.participants.all %}
-        {% if participant != request.user %}
-        <a href="{% url 'chat' participant.id %}" class="participant-anchor">
-            <div class="participant-box">
-                {{ participant.username }}
-            </div>
-        </a>
-        {% endif %}
-        {% endfor %}
+    <div class="conversation">
+        <div class="participants-box">
+            {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                    <a href="{% url 'chat' participant.id %}" style="text-decoration: none; color:black;">
+                        <div class="participant-box">
+                        {{ participant.username }}
+                    </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endfor %}
+
+
 {% endblock %}
+
