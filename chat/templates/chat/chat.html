@@ -48,7 +48,6 @@
         <img src="/{{ receiver.profile_picture }}" alt="profile_picture">
     </div>
     <h4>{{receiver.first_name}}</h4>
-    <hr>
     {% for message in messages %}
     {% if message.sender.id == request.user.id %}
     <div class="sender">

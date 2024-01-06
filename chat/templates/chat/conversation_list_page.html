@@ -19,21 +19,19 @@
 
 <!-- Assuming you have a list of conversations in the 'conversations' variable -->
 {% for conversation in conversations %}
-<div class="conversation">
-    <!--        <h3>Conversation ID: {{ conversation.id }}</h3>-->
-    <!--        <p>Participants:</p>-->
-    <div class="participants-box">
-        {% for participant in conversation.participants.all %}
-        {% if participant != request.user %}
-        <a href="{% url 'chat' participant.id %}" style="text-decoration: none; color:black;">
-            <div class="participant-box">
-                {{ participant.username }}
-            </div>
-        </a>
-        {% endif %}
-        {% endfor %}
+    <div class="conversation">
+<!--        <h3>Conversation ID: {{ conversation.id }}</h3>-->
+<!--        <p>Participants:</p>-->
+        <div class="participants-box">
+            {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                    <div class="participant-box">
+                        {{ participant.username }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endfor %}
 
 
