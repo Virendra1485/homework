@@ -24,7 +24,17 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    {% if request.user.email %}
+                        {% if request.user.role == "customer" %}
+                            <a class="nav-link active" aria-current="page" href="{% url 'workers' %}?page=1">Home</a>
+                        {% elif request.user.role == 'worker' %}
+                            <a class="nav-link active" aria-current="page" href="{% url 'customers' %}?page=1">Home</a>
+                        {% else %}
+                            <a class="nav-link active" aria-current="page" href="{% url 'log-in' %}">Home</a>
+                        {% endif %}
+                    {% else %}
+                        <a class="nav-link active" aria-current="page" href="{% url 'log-in' %}">Home</a>
+                    {% endif %}
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'chats' %}">Chats</a>
@@ -34,6 +44,13 @@
                     <a class="nav-link" href="{% url 'chats' %}">{{request.user}}---{{request.user.role}}</a>
                 </li>
                 {% endif %}
+                <li class="nav-item">
+                    {% if request.user.role == "customer" %}
+                        <a class="nav-link" href="{% url 'customer_detail' request.user.id %}">Profile</a>
+                    {% elif request.user.role == "worker" %}
+                        <a class="nav-link" href="{% url 'worker_detail' request.user.id %}">Profile</a>
+                    {% endif %}
+                </li>
             </ul>
             <div>
                 <ul class="d-flex">
