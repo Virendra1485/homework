@@ -83,3 +83,12 @@ class CustomerDetailView(DetailView):
     model = UserAccount
     template_name = 'account/customer_detail.html'
     context_object_name = 'customer'
+
+
+class UserProfileView(LoginRequiredMixin, DetailView):
+    model = UserAccount
+    template_name = 'account/profile.html'
+    context_object_name = 'user'
+
+    def get_object(self, queryset=None):
+        return self.model.objects.get(pk=self.request.user.id)
