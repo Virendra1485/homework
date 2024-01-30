@@ -32,10 +32,6 @@ class ConversationDetailView(LoginRequiredMixin, DetailView):
 class ChatView(LoginRequiredMixin, TemplateView):
     template_name = 'chat/chat.html'
 
-    # def get_object(self, queryset=None):
-    #     worker_id = self.kwargs.get("worker_id")
-    #     pass
-
     def get_context_data(self, **kwargs):
         worker_id = self.kwargs.get("worker_id")
         worker = UserAccount.objects.get(pk=worker_id)
