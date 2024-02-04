@@ -1,4 +1,4 @@
-{% extends "homework/base.html" %}
+    {% extends "homework/base.html" %}
 {% block content %}
 <style>
     .customer-image {
@@ -82,14 +82,14 @@
                     {% endif %}
                 </div>
                 <div class="col-md-6" style="text-align: right; padding-right: 30px;">
-                    Delete your account
+                    <a href="{% url 'delete-user' user.id %}" style="color: red;">Delete your account</a>
                 </div>
             </div>
         </div>
     </div>
     <div class="col-md-6 mt-4"
          style="margin-left: 30px; border: 2px solid black; border-radius: 10px; border-style: groove;">
-        <h2 style="margin-left: 20px;">Address</h2>
+        <h2 style="margin-left: 20px;" class="mt-2">Address</h2>
         <hr style="margin-left: 20px; width: 600px;">
         <div class="mt-4 mb-4" style="display: flex; margin-left: 20px;">
             <div class="col-md-3"><strong>City</strong></div>

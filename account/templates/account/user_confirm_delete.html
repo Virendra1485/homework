@@ -1,0 +1,89 @@
+{% extends 'homework/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Add styling for the modal */
+.modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fefefe;
+  padding: 20px;
+  text-align: center;
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+</style>
+<!-- Include the modal HTML structure in your template -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <!-- Add the onclick event to open the modal -->
+        <a href="#" onclick="openModal()">Open Modal</a>
+
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h1>Delete User</h1>
+        <p>Are you sure you want to delete your account?</p>
+
+        <form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            {{ form }}
+            <input type="submit" value="Confirm">
+        </form>
+        <a href="{% url 'delete-user' user.id %}">Yes, delete</a>
+        <a href="{% url 'profile' %}" onclick="closeModal()">Cancel</a>
+    </div>
+</div>
+
+
+<script>
+    // JavaScript functions to show and hide the modal
+function openModal() {
+  document.getElementById('myModal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('myModal').style.display = 'none';
+}
+
+    function deleteUser() {
+        // Make an AJAX request to delete the user
+        fetch('{% url "delete-user" user.id %}', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // Include the CSRF token if required
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect to the success URL
+                window.location.href = '{% url "home" %}';
+            } else {
+                // Handle error if needed
+                console.error('Failed to delete user');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+</script>
+{% endblock %}
