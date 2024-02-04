@@ -1,7 +1,8 @@
+import os
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, View, DetailView, ListView
+from django.views.generic import CreateView, View, DetailView, ListView, DeleteView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .form import UserSignUpForm
@@ -92,3 +93,25 @@ class UserProfileView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         return self.model.objects.get(pk=self.request.user.id)
+
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+    model = UserAccount
+    success_url = reverse_lazy('home')
+    template_name = 'account/user_confirm_delete.html'
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj != self.request.user:
+            return redirect('home')
+        return obj
+
+    # def delete(self, request, *args, **kwargs):
+    #     user = self.get_object()
+    #     if user.profile_picture:
+    #         file_path = user.profile_picture.path
+    #         breakpoint()
+    #         if os.path.exists(file_path):
+    #             os.remove(file_path)
+    #     user.delete()
+    #     return redirect(self.success_url)

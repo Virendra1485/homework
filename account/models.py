@@ -61,7 +61,8 @@ class UserAccount(AbstractUser):
     published = models.BooleanField(default=False)
     location_country = models.CharField(max_length=100, default="")
     location_city = models.CharField(max_length=100, default="")
-    blocker = models.CharField(choices=BLOCKER, default=[])
+    location_address = models.CharField(max_length=100, default="")
+    blocker = MultiSelectField(choices=BLOCKER, validators=[MaxValueValidator(3)], default=[])
 
     USERNAME_FIELD = "email"
 

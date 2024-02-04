@@ -16,4 +16,5 @@ class UserSignUpForm(forms.ModelForm):
             "profile_picture",
             "location_country",
             "location_city",
+            "blocker",
         )
