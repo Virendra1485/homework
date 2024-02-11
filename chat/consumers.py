@@ -1,5 +1,4 @@
 import json
-from django.db.models import Count
 from channels.generic.websocket import WebsocketConsumer
 from asgiref.sync import async_to_sync
 from .models import Conversation, Message
@@ -34,13 +33,11 @@ class ChatConsumer(WebsocketConsumer):
         sender_id = text_data['sender_id']
         receiver_id = text_data['receiver_id']
         users = [UserAccount.objects.get(pk=sender_id).id, UserAccount.objects.get(pk=receiver_id).id]
-        conversation = Conversation.objects.filter(participants__in=users).annotate(
-            participant_count=Count('participants')).filter(participant_count=len(users)).first()
+        conversation = Conversation.objects.filter(participants__in=users).first()
         if not conversation:
             conversation = Conversation.objects.create()
             conversation.participants.add(*users)
         Message.objects.create(conversation=conversation, sender_id=sender_id, text=message)
-        print('Message:', message)
 
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {
@@ -50,11 +47,6 @@ class ChatConsumer(WebsocketConsumer):
                 'sender_id': sender_id
             }
         )
-
-        # self.send(text_data=json.dumps({
-        #     'type': 'chat',
-        #     'message': message
-        # }))
 
     def chat_message(self, event):
         message = event['message']

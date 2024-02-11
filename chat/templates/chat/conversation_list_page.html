@@ -16,23 +16,28 @@
     }
 </style>
 
-
+{% if conversations %}
 {% for conversation in conversations %}
-    <div class="conversation">
-        <div class="participants-box">
-            {% for participant in conversation.participants.all %}
-                {% if participant != request.user %}
-                    <a href="{% url 'chat' participant.id %}" style="text-decoration: none; color:black;">
-                        <div class="participant-box">
-                        {{ participant.username }}
-                    </div>
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </div>
+<div class="conversation">
+    <div class="participants-box">
+        {% for participant in conversation.participants.all %}
+        {% if participant != request.user %}
+        <a href="{% url 'chat' participant.id %}" style="text-decoration: none; color:black;">
+            <div class="participant-box">
+                {{ participant.username }}
+            </div>
+        </a>
+        {% endif %}
+        {% endfor %}
     </div>
+</div>
 {% endfor %}
+{% else %}
+<div style="text-align: center; margin-top: 20px;">
+    <h1>Chats not found</h1>
+    <p>Connect with people <a href="{% url 'customers' %}">here</a>.</p>
+</div>
 
-
+{% endif %}
 {% endblock %}
 
