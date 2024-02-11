@@ -1,4 +1,4 @@
-    {% extends "homework/base.html" %}
+{% extends "homework/base.html" %}
 {% block content %}
 <style>
     .customer-image {
@@ -35,38 +35,95 @@
             background-color: #fff;
         }
 
-        .label {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: right;
-        }
+    .label {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: right;
+    }
 
-        .value {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
+    .value {
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    .bn30 {
+  border: 5em;
+  cursor: pointer;
+  outline: none;
+  font-size: 16px;
+  -webkit-transform: translate(0);
+  transform: translate(0);
+  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+  padding: 0.7em 2em;
+  border-radius: 65px;
+  box-shadow: 1px 1px 10px rgba(255, 255, 255, 0.438);
+  -webkit-transition: box-shadow 0.25s;
+  transition: box-shadow 0.25s;
+  color: white;
+}
+
+.bn30 .text {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-image: linear-gradient(45deg, #4568dc, #b06ab3);
+}
+
+.bn30:after {
+  content: "";
+  border-radius: 18px;
+  position: absolute;
+  margin: 4px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  background: #0e0e10;
+}
+
+.bn30:hover {
+  background-image: linear-gradient(-45deg, #4568dc, #b06ab3);
+  box-shadow: 0 12px 24px rgba(128, 128, 128, 0.1);
+}
+
+.bn30:hover .text {
+  background-image: linear-gradient(-45deg, #4568dc, #b06ab3);
+}
 </style>
 <div style="font-size: 70px; text-align: center;">
     <strong>Profile</strong>
 </div>
 <div class="container" style="display: flex;">
-    <div class="col-md-6 mt-4">
+    <div class="col-md-6 mt-4" style="display: inline-block; height: 100px; max-height: 100px;">
         <div class="border-example dashed-border ">
             <div style="display: flex;">
                 <div class="customer-image" style="display: flex;">
                     <img src="/{{ user.profile_picture }}" alt="profile_picture">
                 </div>
-                <h5 class="card-title mt-4" style="margin-left: 20px;">{{ user.first_name }}</h5>
+                <div class="mt-4" style="margin-left: 30px;">
+                    <form id="profilePictureForm" method="POST" enctype="multipart/form-data"
+                          action="{% url 'change-profile-picture' user.id %}">
+                        {% csrf_token %}
+                        {{ update_profile_picture_form }}
+                        <button type="submit" class="bn30 mt-3">Update</button>
+                    </form>
+                </div>
             </div>
             <h4 class="mt-4">Person Information</h4>
             <hr>
+
+
+
             <div class="info-container">
                 <div style="display:flex;">
                     <div class="col-md-4"><strong>Name</strong></div>
                     <div class="col-md-4">{{ user.first_name }}</div>
+                    <div>
+                        <a href="{% url 'update-personal-info' user.id %}">user_confirm_delete</a>
+                    </div>
                 </div>
-                <div style="display:flex;">
+                <div class="mt-2" style="display:flex; height:70px; overflow: hidden;">
                     <div class="col-md-4"><strong>Personal note</strong></div>
                     <div class="col-md-4">{{ user.description }}</div>
                 </div>
@@ -89,10 +146,22 @@
     </div>
     <div class="col-md-6 mt-4"
          style="margin-left: 30px; border: 2px solid black; border-radius: 10px; border-style: groove;">
-        <h2 style="margin-left: 20px;" class="mt-2">Address</h2>
+        <div style="display: flex;">
+            <div class="col-md-6">
+                <h2 style="margin-left: 20px;" class="mt-2">Address</h2>
+            </div>
+            <div class="col-md-6" style="margin-top: 18px; margin-left: 110px;">
+                <a href="{% url 'update-preference' user.id %}">Update user preference</a>
+            </div>
+        </div>
+
         <hr style="margin-left: 20px; width: 600px;">
         <div class="mt-4 mb-4" style="display: flex; margin-left: 20px;">
-            <div class="col-md-3"><strong>City</strong></div>
+            <div class="col-md-3"><strong>Address</strong></div>
+            <div class="col-md-6">{{ user.location_address }}</div>
+        </div>
+        <div class="mt-4 mb-4" style="display: flex; margin-left: 20px;">
+            <div class="col-md-3"><strong>City</strong></div>1
             <div class="col-md-6">{{ user.location_city }}</div>
         </div>
         <hr style="margin-left: 20px; width: 600px;">

@@ -17,7 +17,6 @@ class ConversationListView(LoginRequiredMixin, ListView):
     template_name = "chat/conversation_list_page.html"
     context_object_name = "conversations"
 
-
     def get_queryset(self):
         return self.request.user.conversations.all()
 
@@ -35,17 +34,15 @@ class ChatView(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         worker_id = self.kwargs.get("worker_id")
         worker = UserAccount.objects.get(pk=worker_id)
-        current_user = self.request.user.id
+        current_user = UserAccount.objects.get(pk=self.request.user.id)
         users = [worker_id, current_user]
         from django.db.models import Count
-        conversation = Conversation.objects.filter(participants__in=users).annotate(
-            participant_count=Count('participants')).filter(participant_count=len(users)).first()
-
+        conversation = Conversation.objects.filter(participants__in=users).first()
         messages = Message.objects.filter(conversation=conversation).all()
 
         context = {
-                'messages': messages,
-                'receiver': worker
+            'messages': messages,
+            'receiver': worker
         }
 
         return context
