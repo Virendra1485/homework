@@ -2,10 +2,10 @@ import os
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView, View, DetailView, ListView, DeleteView
+from django.views.generic import CreateView, View, DetailView, ListView, DeleteView, UpdateView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from .form import UserSignUpForm
+from .form import UserSignUpForm, UpdateProfilePictureForm, UpdatePersonalInfoForm, UpdateUserPreferenceForm
 from .models import UserAccount
 
 
@@ -94,6 +94,11 @@ class UserProfileView(LoginRequiredMixin, DetailView):
     def get_object(self, queryset=None):
         return self.model.objects.get(pk=self.request.user.id)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['update_profile_picture_form'] = UpdateProfilePictureForm()
+        return context
+
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
     model = UserAccount
@@ -106,12 +111,48 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
             return redirect('home')
         return obj
 
-    # def delete(self, request, *args, **kwargs):
-    #     user = self.get_object()
-    #     if user.profile_picture:
-    #         file_path = user.profile_picture.path
-    #         breakpoint()
-    #         if os.path.exists(file_path):
-    #             os.remove(file_path)
-    #     user.delete()
-    #     return redirect(self.success_url)
+
+class UpdateProfilePictureView(UpdateView):
+    model = UserAccount
+    form_class = UpdateProfilePictureForm
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset=None):
+        self.request.user.profile_picture.delete()
+        return self.request.user
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.user = user
+        return super().form_valid(form)
+
+
+class UpdatePersonalInfo(LoginRequiredMixin, UpdateView):
+    model = UserAccount
+    template_name = "account/update_personal_info.html"
+    form_class = UpdatePersonalInfoForm
+    success_url = reverse_lazy("profile")
+
+    def get_object(self, queryset=None):
+        # self.request.user.profile_picture.delete()
+        return self.request.user
+
+    def form_valid(self, form):
+        user = self.request.user
+        form.instance.user = user
+        return super().form_valid(form)
+
+
+class UpdateUserPreferenceView(LoginRequiredMixin, UpdateView):
+    model = UserAccount
+    template_name = "account/preference.html"
+    form_class = UpdateUserPreferenceForm
+    success_url = reverse_lazy("profile")
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def form_valid(self, form):
+        user = self.request.user
+        return super().form_valid(form)
+
