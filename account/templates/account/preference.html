@@ -1,0 +1,119 @@
+{% extends 'homework/base.html' %}
+{% load static %}
+{% block content %}
+<style>
+    /* Add styling for the modal */
+.modal {
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: absolute;
+  top: 30%;
+<!--  margin-left: 100px;-->
+<!--  margin-left: 100px;-->
+  left: 10px;
+<!--  right: 100px;-->
+  transform: translate(-50%, -50%);
+  background-color: #fefefe;
+  padding: 20px;
+  text-align: center;
+
+}
+
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+</style>
+<!-- Include the modal HTML structure in your template -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h1>Update Your Preference</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="info-container">
+                <div class="mt-4" style="display: flex;">
+                    <div class="col-md-4"><strong>Address</strong></div>
+                    <input type="text" class="form-control text-center" style="width: 400px;" name="location_address" value="{{user.location_address}}">
+                </div>
+                <div class="mt-4" style="display: flex;">
+                    <div class="col-md-4"><strong>City</strong></div>
+                    <input type="text" name="location_city" value="{{user.location_city}}" class="form-control text-center" style="width: 400px;">
+                </div>
+                <div class="mt-4" style="display: flex;">
+                    <div class="col-md-4"><strong>location_country</strong></div>
+                    <input type="text" name="location_country" value="{{user.location_country}}" class="form-control text-center" style="width: 400px;">
+                </div>
+                <div class="mt-4" style="display: flex;">
+                    <div class="col-md-4">
+                        <strong>Working Days</strong>
+                    </div>
+                    {% for day in form.working_days %}
+                    <label class="form-check-label">
+                        {{ day }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                    {% endfor %}
+                </div>
+                <div class="mt-4" style="display: flex;">
+                    <div class="col-md-4">
+                        <strong>blocker</strong>
+                    </div>
+                    {% for blocker in form.blocker %}
+                    <label class="form-check-label">
+                        {{ blocker }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit" class="mt-4">Update Personal Info</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    // JavaScript functions to show and hide the modal
+function openModal() {
+  document.getElementById('myModal').style.display = 'block';
+}
+
+function closeModal() {
+  document.getElementById('myModal').style.display = 'none';
+}
+
+    function deleteUser() {
+        // Make an AJAX request to delete the user
+        fetch('{% url "delete-user" user.id %}', {
+            method: 'DELETE',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',  // Include the CSRF token if required
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect to the success URL
+                window.location.href = '{% url "home" %}';
+            } else {
+                // Handle error if needed
+                console.error('Failed to delete user');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+</script>
+{% endblock %}
