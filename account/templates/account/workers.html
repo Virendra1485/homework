@@ -53,7 +53,11 @@
                         <div class="card worker-card mt-4" style="height: 512px; width: 293px">
                             <div style="margin: 10px;">
                                 <div class="worker-image">
-                                    <img src="/{{ worker.profile_picture }}" alt="profile_picture">
+                                    {% if MEDIA_URL %}
+                                    <img src="/{{MEDIA_URL}}/{{ worker.profile_picture }}" alt="profile_picture">
+                                    {% else %}
+                                    <img src="/media/{{ worker.profile_picture }}" alt="profile_picture">
+                                    {% endif %}
                                     <h5 class="card-title">{{ worker.first_name }}</h5>
                                 </div>
                                 <div class="worker-details">

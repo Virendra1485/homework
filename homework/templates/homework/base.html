@@ -21,9 +21,9 @@
         <a class="navbar-brand" href="{% url 'home' %}">DJ</a>
         {% else %}
         {% if request.user.role == "customer" %}
-        <a class="navbar-brand" href="{% url 'customers' %}">DJ</a>
-        {% else %}
         <a class="navbar-brand" href="{% url 'workers' %}">DJ</a>
+        {% else %}
+        <a class="navbar-brand" href="{% url 'customers' %}">DJ</a>
         {% endif %}
         {% endif %}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"

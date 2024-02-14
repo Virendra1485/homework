@@ -49,7 +49,7 @@ class UserAccount(AbstractUser):
         ('Ironing', 'Ironing'),
     ]
 
-    profile_picture = models.ImageField(upload_to='media/profile_pictures/', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
     working_days = MultiSelectField(choices=DAY_CHOICES, validators=[MaxValueValidator(6)], default=[])
     role = models.CharField(max_length=20, choices=RoleChoice, default="WORKER")
@@ -63,6 +63,7 @@ class UserAccount(AbstractUser):
     location_city = models.CharField(max_length=100, default="")
     location_address = models.CharField(max_length=100, default="")
     blocker = MultiSelectField(choices=BLOCKER, validators=[MaxValueValidator(3)], default=[])
+    stripe_customer_id = models.CharField(max_length=50, unique=True, blank=True, null=True)
 
     USERNAME_FIELD = "email"
 
@@ -74,3 +75,19 @@ class UserAccount(AbstractUser):
         if not self.username:
             self.username = self.email
         super().save(*args, **kwargs)
+
+
+class Payment(models.Model):
+
+    PAYMENT_STATUS_CHOICE = [
+        ('REQUIRE_PAYMENT_METHOD', 'requires_payment_method'),
+        ('REQUIRES_ACTION', 'requires_action'),
+        ('SUCCEEDED', 'succeeded'),
+        ('FAILED', 'Failed'),
+    ]
+    payment_id = models.CharField(max_length=50, unique=True, default="")
+    payment_status = models.CharField(max_length=50, choices=PAYMENT_STATUS_CHOICE, default="requires_payment_method")
+    payment_date = models.DateTimeField(auto_now_add=True)
+    customer = models.ForeignKey(UserAccount, on_delete=models.CASCADE, related_name="payment")
+    paid_location_city = models.CharField(max_length=50)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)

@@ -1,4 +1,4 @@
-import os
+import stripe
 from django.contrib.auth import login, logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .form import UserSignUpForm, UpdateProfilePictureForm, UpdatePersonalInfoForm, UpdateUserPreferenceForm
 from .models import UserAccount
+from homework import settings
 
 
 class UserRegistrationView(CreateView):
@@ -21,6 +22,10 @@ class UserRegistrationView(CreateView):
         form.instance.role = role
         response = super().form_valid(form)
         self.object.set_password(form.cleaned_data['password'])
+        if role == 'customer':
+            stripe.api_key = settings.STRIPE_SECRET_KEY
+            stripe_customer = stripe.Customer.create(email=form.cleaned_data['email'])
+            self.object.stripe_customer_id = stripe_customer.id
         self.object.save()
         return response
 
@@ -55,9 +60,9 @@ class CustomerListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return UserAccount.objects.filter(role="customer")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     return context
 
 
 class WorkerListView(LoginRequiredMixin, ListView):

@@ -32,8 +32,14 @@ class ChatConsumer(WebsocketConsumer):
         message = text_data['message']
         sender_id = text_data['sender_id']
         receiver_id = text_data['receiver_id']
-        users = [UserAccount.objects.get(pk=sender_id).id, UserAccount.objects.get(pk=receiver_id).id]
-        conversation = Conversation.objects.filter(participants__in=users).first()
+        users = [sender_id, receiver_id]
+        from django.db.models import Count
+        conversation = Conversation.objects.annotate(count=Count('participants')).filter(count=len(users))
+        for user in users:
+            conversation = conversation.filter(participants__id=user)
+        conversation = conversation.first()
+        if sender_id == receiver_id:
+            breakpoint()
         if not conversation:
             conversation = Conversation.objects.create()
             conversation.participants.add(*users)

@@ -1,0 +1,18 @@
+{% extends 'homework/base.html' %}
+{% block content %}
+<div class="col-md-12" style="border: 2px solid green; border-radius: 10px; margin-top: 100px; padding: 10px; justify-content: center;">
+    <center>
+        <h1>Confirm Your Payment!</h1>
+        <p>Click on confirm button for confirm the payment</p>
+    </center>
+    <hr style="border: 2px solid #000103;">
+    <div class="item-content: center;">
+        <div style="display: flex;">Your payment location city is : <div  style="color: green; margin-left: 5px;">{{payment.paid_location_city}}</div></div>
+        <div style="display: flex;">Your payment amount : <div  style="color: green; margin-left: 5px;">{{payment.amount}}</div></div>
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
