@@ -10,6 +10,9 @@ def custom_404(request, exception):
 class HomeView(View):
     def get(self, request, *args, **kwargs):
         if request.user.is_authenticated and request.user.email:
-            return redirect("user/account/customers/")
+            if request.user.role == 'worker':
+                return redirect("user/account/customers/")
+            else:
+                return redirect("user/account/workers/")
         else:
             return render(request, 'homework/home.html')

@@ -11,5 +11,3 @@ class Message(models.Model):
     sender = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
-
