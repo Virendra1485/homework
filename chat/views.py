@@ -1,14 +1,13 @@
-import stripe
 from django.shortcuts import render
 from .models import Conversation, Message
 from django.views.generic import ListView, DetailView, View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from account.models import UserAccount, Payment
-from homework import settings
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Count
+from stripe_utils import StripeHelpers
 
 
 def conversation_detail(request, conversation_id):
@@ -40,15 +39,16 @@ class ChatView(LoginRequiredMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         if self.request.user.role == "customer":
             worker = UserAccount.objects.get(pk=self.kwargs.get("worker_id"))
-            payment = Payment.objects.filter(paid_location_city=worker.location_city, payment_status="succeeded")
-            print(payment, "--------------")
+            payment = Payment.objects.filter(paid_location_city=worker.location_city, payment_status="succeeded",
+                                             customer=self.request.user).first()
             if not payment:
-                stripe.api_key = settings.STRIPE_SECRET_KEY
-                payment_intent = stripe.PaymentIntent.create(amount=100*100, currency="INR", payment_method_types=["card"],
-                                                             customer=self.request.user.stripe_customer_id)
-                payment = Payment.objects.create(customer=self.request.user, payment_status=payment_intent.status,
+                payment_intent_id, status = StripeHelpers().create_payment_intent(
+                    100 * 100, "INR",
+                    self.request.user.stripe_customer_id
+                )
+                payment = Payment.objects.create(customer=self.request.user, payment_status=status,
                                                  paid_location_city=worker.location_city, amount=100,
-                                                 payment_id=payment_intent.id)
+                                                 payment_id=payment_intent_id)
                 payment.save()
                 return HttpResponseRedirect(reverse('confirm_payment') + f'?payment_id={payment.id}')
 
@@ -72,13 +72,11 @@ class PaymentConfirm(TemplateView):
     def post(self, request, *args, **kwargs):
 
         context_data = self.get_context_data()
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        payment_intent = stripe.PaymentIntent.confirm(context_data.get("payment").payment_id, payment_method="pm_card_visa", return_url="http://127.0.0.1:8000/chats/payment/success/",)
+        url, payment_intent_status = StripeHelpers().confirm_payment_intent(context_data.get("payment").payment_id)
         payment = Payment.objects.get(pk=context_data.get("payment").id)
-        payment.payment_status = payment_intent.status
+        payment.payment_status = payment_intent_status
         payment.save()
-        print(payment_intent, "====================")
-        return redirect(payment_intent.next_action.redirect_to_url.url)
+        return redirect(url)
 
     def get_context_data(self, **kwargs):
         payment = Payment.objects.get(pk=int(self.request.GET.get("payment_id")))
@@ -89,8 +87,8 @@ class PaymentSuccessView(TemplateView):
     template_name = 'chat/payment_success.html'
 
     def get_context_data(self, **kwargs):
-        payment_intent = stripe.PaymentIntent.retrieve(self.request.GET.get("payment_intent"))
+        payment_intent_status = StripeHelpers().retrieve_payment_intent(self.request.GET.get("payment_intent"))
         payment = Payment.objects.filter(payment_id=self.request.GET.get("payment_intent")).first()
-        payment.payment_status = payment_intent.status
+        payment.payment_status = payment_intent_status
         payment.save()
         return {"payment": payment}
