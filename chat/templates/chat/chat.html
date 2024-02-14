@@ -1,5 +1,5 @@
 {% extends 'homework/base.html' %}
-
+{% load static %}
 {% block content %}
 <style>
     .centered-div {
@@ -45,7 +45,11 @@
 <center><h4>Lets chat!</h4></center>
 <div class="centered-div">
     <div class="customer-image">
-        <img src="/{{ receiver.profile_picture }}" alt="profile_picture">
+        {% if MEDIA_URL %}
+        <img src="/{{ MEDIA_URL }}/{{ receiver.profile_picture }}" alt="profile_picture">
+        {% else %}
+        <img src="/media/{{ receiver.profile_picture }}" alt="profile_picture">
+        {% endif %}
     </div>
     <h4>{{receiver.first_name}}</h4>
     {% for message in messages %}
@@ -77,6 +81,8 @@
     const messageInput = form.querySelector('input[name="message"]');
 
     messageInput.addEventListener('keydown', (e) => {
+    console.log("dklfslkfjjskljsadk;l", {{receiver.id}});
+    console.log("dklfslkfjjskljsadk;l", {{request.user.id}});
     if (e.key === 'Enter') {
         e.preventDefault();
         sendMessage();
@@ -85,7 +91,7 @@
 
     function sendMessage() {
     const message = messageInput.value.trim();
-    console.log("dddddddddddddddddddddddddd", message);
+    console.log("dddddddddddddddddddddddddd", {{request.user.id}});
     if (message) {
         chatSocket.send(JSON.stringify({
             'message': message,
