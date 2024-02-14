@@ -10,6 +10,7 @@ class UserSignUpForm(forms.ModelForm):
             "last_name",
             "email",
             "password",
+            "location_address",
             "working_days",
             "amount",
             "description",
