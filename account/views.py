@@ -1,6 +1,12 @@
+import os
+
+import qrcode
+from io import BytesIO
 from django.contrib.auth import logout
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.views.generic import CreateView, View, DetailView, ListView, DeleteView, UpdateView
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -33,6 +39,7 @@ class UserLogInView(LoginView):
 
     def get_success_url(self):
         user = self.request.user
+        self.create_qr_image()
         if user is None:
             return reverse_lazy("log-in")
         elif user.role == "customer":
@@ -42,9 +49,33 @@ class UserLogInView(LoginView):
         else:
             return reverse_lazy('home')
 
+    def create_qr_image(self):
+        # Generate QR code
+        user = self.request.user
+        data = f"https://{os.environ.get('HOST')}?_auth_user_id={self.request.session._session_cache['_auth_user_id']}&_auth_user_hash={self.request.session._session_cache['_auth_user_hash']}&_auth_user_backend={self.request.session._session_cache['_auth_user_backend']}&_SessionBase__session_key={self.request.session._SessionBase__session_key}".replace('"', '')
+        qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4,)
+        qr.add_data(data)
+        qr.make(fit=True)
+
+        # Create an image from the QR Code instance
+        qr_image = qr.make_image(fill_color="black", back_color="white")
+
+        # Save the image to a BytesIO buffer
+        buffer = BytesIO()
+        qr_image.save(buffer, format="PNG")
+        image_file = ContentFile(buffer.getvalue())
+        if user.qr_picture:
+            default_storage.delete(user.qr_picture.path)
+
+        file_path = default_storage.save('qr_pictures/generated.png', image_file)
+        user.qr_picture = file_path
+        user.save()
+        return "response"
+
 
 class UserLogOutView(View):
     def get(self, request):
+        self.request.user.qr_picture.delete()
         logout(request)
         return redirect("log-in")
 
@@ -108,6 +139,8 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
         obj = super().get_object(queryset)
         if obj != self.request.user:
             return redirect('home')
+        obj.profile_picture.delete()
+        obj.qr_picture.delete()
         return obj
 
 
@@ -155,3 +188,7 @@ class UpdateUserPreferenceView(LoginRequiredMixin, UpdateView):
         user = self.request.user
         return super().form_valid(form)
 
+
+class QrView(LoginRequiredMixin, TemplateView):
+    model = UserAccount
+    template_name = "account/my_qr.html"

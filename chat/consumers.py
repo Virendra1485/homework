@@ -39,7 +39,8 @@ class ChatConsumer(WebsocketConsumer):
             conversation = conversation.filter(participants__id=user)
         conversation = conversation.first()
         if sender_id == receiver_id:
-            breakpoint()
+            print("both ids are same")
+            pass
         if not conversation:
             conversation = Conversation.objects.create()
             conversation.participants.add(*users)

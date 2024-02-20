@@ -50,6 +50,7 @@ class UserAccount(AbstractUser):
     ]
 
     profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    qr_picture = models.ImageField(upload_to='qr_picture/', null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
     working_days = MultiSelectField(choices=DAY_CHOICES, validators=[MaxValueValidator(6)], default=[])
     role = models.CharField(max_length=20, choices=RoleChoice, default="WORKER")

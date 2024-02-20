@@ -1,7 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import TemplateView
 from .views import UserRegistrationView, UserLogInView, UserLogOutView, CustomerListView, WorkerListView, \
-    WorkerDetailView, CustomerDetailView, UserProfileView, UserDeleteView, UpdateProfilePictureView, UpdatePersonalInfo, UpdateUserPreferenceView
+    WorkerDetailView, CustomerDetailView, UserProfileView, UserDeleteView, UpdateProfilePictureView, UpdatePersonalInfo, UpdateUserPreferenceView, QrView
 
 urlpatterns = [
     path('registration/', UserRegistrationView.as_view(), name="registration"),
@@ -16,4 +16,5 @@ urlpatterns = [
     path('update/personal/info/<int:pk>/', UpdatePersonalInfo.as_view(), name="update-personal-info"),
     path('update-preference/<int:pk>/', UpdateUserPreferenceView.as_view(), name="update-preference"),
     path('change-profile-picture/<int:pk>', UpdateProfilePictureView.as_view(), name="change-profile-picture"),
+    path('my-QR', QrView.as_view(), name="my-qr"),
 ]
