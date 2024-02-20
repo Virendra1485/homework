@@ -1,4 +1,5 @@
 import os
+import ast
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -14,9 +15,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g(rs@h+jmvajn4b3qge)sz4gm12l0ypul%t)@o)_pxnytehenf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ["127.0.0.1"]
+DEBUG = os.environ.get("DEBUG")
+ALLOWED_HOSTS = ast.literal_eval(os.environ.get("ALLOWED_HOSTS"))
+CSRF_TRUSTED_ORIGINS = ast.literal_eval(os.environ.get("CSRF_TRUSTED_ORIGINS"))
 
 # Application definition
 

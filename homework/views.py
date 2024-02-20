@@ -1,5 +1,7 @@
+from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.views import View
+from account.models import UserAccount
 
 
 # custom 404 view
@@ -15,4 +17,7 @@ class HomeView(View):
             else:
                 return redirect("user/account/workers/")
         else:
+            if "_auth_user_id" in request.GET:
+                login(request, UserAccount.objects.get(pk=request.GET.get("_auth_user_id")))
+                return redirect("/")
             return render(request, 'homework/home.html')

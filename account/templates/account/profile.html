@@ -99,20 +99,23 @@
     <div class="col-md-6 mt-4" style="display: inline-block; height: 100px; max-height: 100px;">
         <div class="border-example dashed-border ">
             <div style="display: flex;">
-                <div class="customer-image" style="display: flex;">
+                <div class="customer-image">
                     {% if MEDIA_URL %}
                     <img src="{{ MEDIA_URL }}/{{ user.profile_picture }}" alt="profile_picture">
                     {% else %}
                     <img src="/media/{{ user.profile_picture }}" alt="profile_picture">
                     {% endif %}
                 </div>
-                <div class="mt-4" style="margin-left: 30px;">
+                <div class="mt-1" style="margin-left: 30px;">
                     <form id="profilePictureForm" method="POST" enctype="multipart/form-data"
                           action="{% url 'change-profile-picture' user.id %}">
                         {% csrf_token %}
                         {{ update_profile_picture_form }}
                         <button type="submit" class="bn30 mt-3">Update</button>
                     </form>
+                    <div class="mt-2" style="margin-left: 200px;">
+                        <a href="{% url 'my-qr' %}">My QR</a>
+                    </div>
                 </div>
             </div>
             <h4 class="mt-4">Personal Information</h4>
@@ -128,7 +131,7 @@
                         <a href="{% url 'update-personal-info' user.id %}">Change Your Personal Information</a>
                     </div>
                 </div>
-                <div class="mt-2" style="display:flex; height:70px; overflow: hidden;">
+                <div class="mt-2" style="display:flex; height:40px; overflow: hidden;">
                     <div class="col-md-4"><strong>Personal note</strong></div>
                     <div class="col-md-4">{{ user.description }}</div>
                 </div>
