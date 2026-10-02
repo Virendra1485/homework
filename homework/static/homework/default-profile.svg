@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#eff0f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ecedee;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="200" height="200" fill="url(#bgGradient)"/>
+
+  <!-- Left dark side - hair and face -->
+  <path d="M 100 30 Q 70 30 65 60 L 65 80 Q 65 90 70 95 L 100 95 Z" fill="#2c3e50" stroke="none"/>
+
+  <!-- Right light side - face -->
+  <path d="M 100 30 Q 130 30 135 60 L 135 80 Q 135 90 130 95 L 100 95 Z" fill="#b0bec5" stroke="none"/>
+
+  <!-- Hair - left side -->
+  <path d="M 65 50 Q 55 45 50 55 Q 48 65 55 75" fill="#2c3e50" stroke="none"/>
+
+  <!-- Hair - right side -->
+  <path d="M 135 50 Q 145 45 150 55 Q 152 65 145 75" fill="#2c3e50" stroke="none"/>
+
+  <!-- Neck - left dark -->
+  <rect x="80" y="95" width="20" height="20" fill="#2c3e50"/>
+
+  <!-- Neck - right light -->
+  <rect x="100" y="95" width="20" height="20" fill="#b0bec5"/>
+
+  <!-- Shirt/Collar - left dark side -->
+  <path d="M 60 115 Q 50 110 50 125 L 50 160 Q 50 170 60 175 L 100 175 L 100 115 Z" fill="#2c3e50" stroke="none"/>
+
+  <!-- Shirt/Collar - right light side -->
+  <path d="M 140 115 Q 150 110 150 125 L 150 160 Q 150 170 140 175 L 100 175 L 100 115 Z" fill="#b0bec5" stroke="none"/>
+
+  <!-- V-neck collar - white -->
+  <path d="M 85 120 L 100 135 L 115 120 L 115 130 L 100 145 L 85 130 Z" fill="#ffffff" stroke="none"/>
+
+  <!-- Shoulders curve -->
+  <path d="M 50 160 Q 40 165 35 180 L 165 180 Q 160 165 150 160" fill="#2c3e50" stroke="none"/>
+
+  <!-- Light shoulder highlight on right -->
+  <path d="M 100 165 Q 130 170 150 160 L 150 175 Q 130 185 100 175 Z" fill="#b0bec5" stroke="none"/>
+</svg>

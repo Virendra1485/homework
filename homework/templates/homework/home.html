@@ -1,48 +1,260 @@
 {% extends "homework/base.html" %}
+{% block title %}Home - DJ Domestic Help Platform{% endblock %}
 {% block content %}
 <style>
-    .center-align {
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #0d8285 0%, #33b6b9 100%);
+        color: white;
+        padding: 6rem 2rem;
+        border-radius: 16px;
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        animation: fadeInDown 0.8s ease;
+    }
+
+    .hero p {
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+        animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    @keyframes fadeInDown {
+        from {
+            opacity: 0;
+            transform: translateY(-30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Action Buttons */
+    .action-buttons {
         display: flex;
+        gap: 2rem;
         justify-content: center;
-        margin-top: 150px;
+        flex-wrap: wrap;
+        animation: fadeInUp 0.8s ease 0.4s both;
     }
 
-    .center-align-h1 {
-        display: flex;
-        justify-content: center;
-        margin-top: 50px;
+    .action-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        flex: 1;
+        min-width: 250px;
+        max-width: 350px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
     }
 
-    .home-button-style {
-        background-color: #0d8285;
+    .action-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
     }
 
-    .home-button-style:hover {
-        background-color: #33b6b9;
+    .action-card i {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+        display: block;
     }
 
-    .home-button-anchor-style {
-         text-decoration: none;
-         color: white;
+    .action-card.customer i {
+        color: #0d8285;
     }
 
-    .home-button-anchor-style:hover {
-         text-decoration: none;
-         color: white;
+    .action-card.worker i {
+        color: #667eea;
+    }
+
+    .action-card h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+    }
+
+    .action-card p {
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+
+    .action-card a {
+        text-decoration: none;
+    }
+
+    .action-card .btn {
+        width: 100%;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 4rem 0;
+        margin: 3rem 0;
+    }
+
+    .features h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+        color: #1f2937;
+    }
+
+    .feature-item {
+        text-align: center;
+        padding: 2rem 1.5rem;
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: #0d8285;
+    }
+
+    .feature-item h4 {
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        color: #1f2937;
+    }
+
+    .feature-item p {
+        color: #6b7280;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .hero {
+            padding: 3rem 1.5rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero p {
+            font-size: 1rem;
+        }
+
+        .action-buttons {
+            gap: 1rem;
+        }
+
+        .action-card {
+            min-width: 100%;
+            max-width: 100%;
+        }
     }
 </style>
-<h1 class="center-align-h1">
-    Looking for domestic help?
-</h1>
 
-<div class="center-align">
-    <div class="btn-group" role="group" aria-label="Basic outlined example">
-        <button type="button" class="btn btn-outline-success home-button-style">
-            <a href="{% url 'registration' %}?role=customer" class="home-button-anchor-style">Need worker</a>
-        </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <button type="button" class="btn btn-outline-success home-button-style">
-            <a href="{% url 'registration' %}?role=worker" class="home-button-anchor-style">Looking for customer</a>
-        </button>
+<div class="hero">
+    <div class="hero-content">
+        <h1>Looking for Domestic Help?</h1>
+        <p>Connect with trusted workers or find customers for your services</p>
     </div>
 </div>
+
+<div class="action-buttons">
+    <div class="action-card customer">
+        <i class="fas fa-person-hiking"></i>
+        <h3>I Need a Worker</h3>
+        <p>Find reliable domestic help for your home. Browse skilled workers, check reviews, and hire with confidence.</p>
+        <a href="{% url 'registration' %}?role=customer" class="btn btn-primary">
+            <i class="fas fa-arrow-right"></i> Get Started
+        </a>
+    </div>
+
+    <div class="action-card worker">
+        <i class="fas fa-briefcase"></i>
+        <h3>I'm a Worker</h3>
+        <p>Offer your services to customers looking for help. Create your profile, showcase your skills, and grow your business.</p>
+        <a href="{% url 'registration' %}?role=worker" class="btn btn-secondary">
+            <i class="fas fa-arrow-right"></i> Start Now
+        </a>
+    </div>
+</div>
+
+<div class="features">
+    <h2>Why Choose DJ?</h2>
+    <div class="row">
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h4>Verified Profiles</h4>
+                <p>All workers are verified and background checked for your safety and peace of mind.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-star"></i>
+                </div>
+                <h4>Ratings & Reviews</h4>
+                <p>Check real reviews from previous customers to make informed decisions.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h4>Secure Payments</h4>
+                <p>Safe and secure payment processing with multiple payment options.</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6">
+            <div class="feature-item">
+                <div class="feature-icon">
+                    <i class="fas fa-headset"></i>
+                </div>
+                <h4>24/7 Support</h4>
+                <p>Our support team is always here to help you with any questions or issues.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

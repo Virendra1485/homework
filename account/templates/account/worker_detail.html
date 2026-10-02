@@ -1,11 +1,15 @@
 {% extends "homework/base.html" %}
-
+{% load static %}
 {% block content %}
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-4">
                 <div class="worker-image">
+                    {% if worker.profile_picture %}
                     <img src="/media/{{ worker.profile_picture }}" alt="profile_picture" class="img-fluid">
+                    {% else %}
+                    <img src="{% static 'homework/default-profile.svg' %}" alt="profile_picture" class="img-fluid">
+                    {% endif %}
                 </div>
             </div>
             <div class="col-md-8">

@@ -7,7 +7,8 @@ from account.models import UserAccount, Payment
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.db.models import Count
-from stripe_utils import StripeHelpers
+from django.contrib import messages as django_messages
+from stripe_utils import StripeHelpers, StripeError
 
 
 def conversation_detail(request, conversation_id):
@@ -42,15 +43,18 @@ class ChatView(LoginRequiredMixin, TemplateView):
             payment = Payment.objects.filter(paid_location_city=worker.location_city, payment_status="succeeded",
                                              customer=self.request.user).first()
             if not payment:
-                payment_intent_id, status = StripeHelpers().create_payment_intent(
-                    100 * 100, "INR",
-                    self.request.user.stripe_customer_id
-                )
-                payment = Payment.objects.create(customer=self.request.user, payment_status=status,
-                                                 paid_location_city=worker.location_city, amount=100,
-                                                 payment_id=payment_intent_id)
-                payment.save()
-                return HttpResponseRedirect(reverse('confirm_payment') + f'?payment_id={payment.id}')
+                try:
+                    payment_intent_id, status = StripeHelpers().create_payment_intent(
+                        100 * 100, "INR",
+                        self.request.user.stripe_customer_id
+                    )
+                    payment = Payment.objects.create(customer=self.request.user, payment_status=status,
+                                                     paid_location_city=worker.location_city, amount=100,
+                                                     payment_id=payment_intent_id)
+                    payment.save()
+                    return HttpResponseRedirect(reverse('confirm_payment') + f'?payment_id={payment.id}')
+                except StripeError as e:
+                    django_messages.error(request, f"Payment error: {str(e)}")
 
         return super().get(request, *args, **kwargs)
 
@@ -70,13 +74,18 @@ class PaymentConfirm(TemplateView):
     template_name = 'chat/payment_confirm.html'
 
     def post(self, request, *args, **kwargs):
-
-        context_data = self.get_context_data()
-        url, payment_intent_status = StripeHelpers().confirm_payment_intent(context_data.get("payment").payment_id)
-        payment = Payment.objects.get(pk=context_data.get("payment").id)
-        payment.payment_status = payment_intent_status
-        payment.save()
-        return redirect(url)
+        try:
+            context_data = self.get_context_data()
+            url, payment_intent_status = StripeHelpers().confirm_payment_intent(context_data.get("payment").payment_id)
+            payment = Payment.objects.get(pk=context_data.get("payment").id)
+            payment.payment_status = payment_intent_status
+            payment.save()
+            if url:
+                return redirect(url)
+            return redirect(reverse('payment_success') + f'?payment_intent={payment.payment_id}')
+        except StripeError as e:
+            django_messages.error(request, f"Payment confirmation failed: {str(e)}")
+            return redirect(reverse('confirm_payment') + f'?payment_id={context_data.get("payment").id}')
 
     def get_context_data(self, **kwargs):
         payment = Payment.objects.get(pk=int(self.request.GET.get("payment_id")))

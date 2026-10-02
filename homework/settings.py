@@ -1,9 +1,37 @@
 import os
 import ast
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
+
+def get_env_variable(var_name, required=False):
+    """
+    Fetch environment variable and optionally validate it exists.
+    Returns None if not required and missing.
+    """
+    value = os.environ.get(var_name)
+    if required and value is None:
+        print(f"Error: Required environment variable '{var_name}' is not set.")
+        sys.exit(1)
+    return value
+
+# Define required environment variables
+REQUIRED_ENV_VARS = [
+    'DEBUG',
+    'ALLOWED_HOSTS',
+    'CSRF_TRUSTED_ORIGINS',
+    'DATABASE_NAME',
+    'DATABASE_USER',
+    'DATABASE_PASSWORD',
+    'DATABASE_HOST',
+    'DATABASE_PORT',
+]
+
+# Validate all required variables exist
+for var in REQUIRED_ENV_VARS:
+    get_env_variable(var, required=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,9 +43,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g(rs@h+jmvajn4b3qge)sz4gm12l0ypul%t)@o)_pxnytehenf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG")
-ALLOWED_HOSTS = ast.literal_eval(os.environ.get("ALLOWED_HOSTS"))
-CSRF_TRUSTED_ORIGINS = ast.literal_eval(os.environ.get("CSRF_TRUSTED_ORIGINS"))
+DEBUG = get_env_variable("DEBUG", required=True)
+ALLOWED_HOSTS = ast.literal_eval(get_env_variable("ALLOWED_HOSTS", required=True))
+CSRF_TRUSTED_ORIGINS = ast.literal_eval(get_env_variable("CSRF_TRUSTED_ORIGINS", required=True))
 
 # Application definition
 
@@ -78,11 +106,11 @@ WSGI_APPLICATION = 'homework.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get("DATABASE_NAME"),
-        'USER': os.environ.get("DATABASE_USER"),
-        'PASSWORD': os.environ.get("DATABASE_PASSWORD"),
-        'HOST': os.environ.get("DATABASE_HOST"),
-        'PORT': os.environ.get("DATABASE_PORT"),
+        'NAME': get_env_variable("DATABASE_NAME", required=True),
+        'USER': get_env_variable("DATABASE_USER", required=True),
+        'PASSWORD': get_env_variable("DATABASE_PASSWORD", required=True),
+        'HOST': get_env_variable("DATABASE_HOST", required=True),
+        'PORT': get_env_variable("DATABASE_PORT", required=True),
     }
 }
 
@@ -130,5 +158,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STRIPE_PUBLISHABLE_KEY = os.environ.get("publishable_key")
-STRIPE_SECRET_KEY = os.environ.get("secret_key")
+STRIPE_PUBLISHABLE_KEY = get_env_variable("publishable_key", required=False)
+STRIPE_SECRET_KEY = get_env_variable("secret_key", required=False)

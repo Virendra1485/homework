@@ -100,18 +100,14 @@
         <div class="border-example dashed-border ">
             <div style="display: flex;">
                 <div class="customer-image">
-                    {% if MEDIA_URL %}
                     {% if user.profile_picture %}
-                    <img src="{{ MEDIA_URL }}/{{ user.profile_picture }}" alt="profile_picture">
+                        {% if MEDIA_URL %}
+                        <img src="{{ MEDIA_URL }}/{{ user.profile_picture }}" alt="profile_picture">
+                        {% else %}
+                        <img src="/media/{{ user.profile_picture }}" alt="profile_picture">
+                        {% endif %}
                     {% else %}
-                    <img src="{{ MEDIA_URL }}/default.jpg" alt="profile_picture">
-                    {% endif %}
-                    {% else %}
-                    {% if user.profile_picture %}
-                    <img src="/media/{{ user.profile_picture }}" alt="profile_picture">
-                    {% else %}
-                    <img src="{{ MEDIA_URL }}/default.jpg" alt="profile_picture">
-                    {% endif %}
+                    <img src="{% static 'homework/default-profile.svg' %}" alt="profile_picture">
                     {% endif %}
                 </div>
                 <div class="mt-1" style="margin-left: 30px;">

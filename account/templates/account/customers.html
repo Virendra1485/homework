@@ -53,10 +53,14 @@
                         <div class="card customer-card mt-4" style="height: 512px; width: 293px">
                             <div style="margin: 10px;">
                                 <div class="customer-image">
-                                    {% if MEDIA_URL %}
-                                    <img src="{{MEDIA_URL}}/{{ customer.profile_picture }}" alt="profile_picture">
+                                    {% if customer.profile_picture %}
+                                        {% if MEDIA_URL %}
+                                        <img src="{{MEDIA_URL}}/{{ customer.profile_picture }}" alt="profile_picture">
+                                        {% else %}
+                                        <img src="/media/{{ customer.profile_picture }}" alt="profile_picture">
+                                        {% endif %}
                                     {% else %}
-                                    <img src="/media/{{ customer.profile_picture }}" alt="profile_picture">
+                                    <img src="{% static 'homework/default-profile.svg' %}" alt="profile_picture">
                                     {% endif %}
                                     <h5 class="card-title">{{ customer.first_name }}</h5>
                                 </div>

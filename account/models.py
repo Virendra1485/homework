@@ -49,7 +49,7 @@ class UserAccount(AbstractUser):
         ('Ironing', 'Ironing'),
     ]
 
-    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', null=True, blank=True, default='homework/default-profile.svg')
     qr_picture = models.ImageField(upload_to='qr_picture/', null=True, blank=True)
     email = models.EmailField(_("email address"), unique=True)
     working_days = MultiSelectField(choices=DAY_CHOICES, validators=[MaxValueValidator(6)], default=[])
@@ -58,6 +58,12 @@ class UserAccount(AbstractUser):
     groups = models.ManyToManyField(Group, related_name="user_groups")
     user_permissions = models.ManyToManyField(Permission, related_name="user_permissions")
     amount = models.PositiveIntegerField(default=100)
+
+    def get_profile_picture_url(self):
+        """Return profile picture URL or default if not set"""
+        if self.profile_picture:
+            return self.profile_picture.url
+        return '/static/homework/default-profile.svg'
     description = models.TextField(blank=True, null=True)
     published = models.BooleanField(default=False)
     location_country = models.CharField(max_length=100, default="")
